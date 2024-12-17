@@ -39,9 +39,13 @@ function App() {
   ];
 
   const [countries, setCountries] = useState(array);
-  const [country, setCountry] = useState("India");
-  const [level, setLevel] = useState(0);
-  const [options, setOptions] = useState([]);
+  const [country, setCountry] = useState(localStorage.getItem("currentCountry") || "India");
+  const [options, setOptions] = useState(
+    JSON.parse(localStorage.getItem("options")) || []
+  );
+  const [level, setLevel] = useState(
+    parseInt(localStorage.getItem("level"), 10) || 0
+  );
 
   // Function to get a random country
   const getRandomCountry = (excluded = []) => {
@@ -53,8 +57,8 @@ function App() {
   };
 
   // Function to generate options
-  const generateOptions = () => {
-    const correctCountry = country;
+  const generateOptions = (currentCountry) => {
+    const correctCountry = currentCountry;
     const option1 = getRandomCountry([correctCountry]);
     const option2 = getRandomCountry([correctCountry, option1]);
     const option3 = getRandomCountry([correctCountry, option1, option2]);
@@ -65,18 +69,32 @@ function App() {
       const j = Math.floor(Math.random() * (i + 1));
       [optionsArray[i], optionsArray[j]] = [optionsArray[j], optionsArray[i]];
     }
-    setOptions(optionsArray);
+    return optionsArray;
   };
 
   useEffect(() => {
-    generateOptions();
-  }, [country, level]);
+    // If options are not in localStorage, generate them
+    if (!options.length) {
+      const newOptions = generateOptions(country);
+      setOptions(newOptions);
+      localStorage.setItem("options", JSON.stringify(newOptions));
+    }
+  }, [country]);
 
   const nextQuestion = () => {
     const randomCountry = getRandomCountry();
     setCountry(randomCountry);
     setCountries((prev) => prev.filter((c) => c !== randomCountry));
     setLevel((prev) => prev + 1);
+
+    // Generate new options
+    const newOptions = generateOptions(randomCountry);
+    setOptions(newOptions);
+
+    // Save to localStorage
+    localStorage.setItem("currentCountry", randomCountry);
+    localStorage.setItem("options", JSON.stringify(newOptions));
+    localStorage.setItem("level", level + 1);
   };
 
   const currentQuestion = () => {
@@ -123,3 +141,4 @@ function App() {
 }
 
 export default App;
+
