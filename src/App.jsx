@@ -85,7 +85,7 @@ function App() {
     const newOptions = generateOptions(randomCountry);
     setOptions(newOptions);
 
-    localStorage.setItem("currentCountry", randomCountry);
+    // localStorage.setItem("currentCountry", randomCountry);
     localStorage.setItem("options", JSON.stringify(newOptions));
     localStorage.setItem("level", level + 1);
   };

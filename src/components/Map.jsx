@@ -3,7 +3,6 @@ import React, { useEffect, useCallback, useRef } from "react";
 function Map({ country }) {
     const mapRef = useRef(null);
     const mapInstanceRef = useRef(null);
-
     const createMap = useCallback(() => {
         if (!mapInstanceRef.current) {
             mapInstanceRef.current = L.map(mapRef.current, {
@@ -30,7 +29,6 @@ function Map({ country }) {
         });
         const geojsonUrl =
             "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json";
-
         fetch(geojsonUrl)
             .then((response) => response.json())
             .then((data) => {
@@ -56,7 +54,6 @@ function Map({ country }) {
     useEffect(() => {
         createMap();
     }, [createMap]);
-
     return (
         <div
             ref={mapRef}
