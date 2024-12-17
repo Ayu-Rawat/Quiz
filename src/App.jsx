@@ -44,7 +44,10 @@ function App() {
     JSON.parse(localStorage.getItem("options")) || []
   );
   const [level, setLevel] = useState(
-    parseInt(localStorage.getItem("level"), 10) || 0
+    Number(JSON.parse(localStorage.getItem("level"))) || 1
+  );
+  const [highLevel,setHighlevel] = useState(
+    Number(JSON.parse(localStorage.getItem('highlevel'))) || 1
   );
 
   const getRandomCountry = (excluded = []) => {
@@ -54,6 +57,13 @@ function App() {
     const randomIndex = Math.floor(Math.random() * filteredCountries.length);
     return filteredCountries[randomIndex];
   };
+
+  const checkForHighlevel= () => {
+    if (level > highLevel){
+      setHighlevel(level)
+      localStorage.setItem('highlevel',level)
+    }else{}
+  }
 
   const generateOptions = (currentCountry) => {
     const correctCountry = currentCountry;
@@ -80,14 +90,12 @@ function App() {
     const randomCountry = getRandomCountry();
     setCountry(randomCountry);
     setCountries((prev) => prev.filter((c) => c !== randomCountry));
-    setLevel((prev) => prev + 1);
 
     const newOptions = generateOptions(randomCountry);
     setOptions(newOptions);
 
     localStorage.setItem("currentCountry", randomCountry);
     localStorage.setItem("options", JSON.stringify(newOptions));
-    localStorage.setItem("level", level + 1);
   };
 
   const currentQuestion = () => {
@@ -98,9 +106,15 @@ function App() {
     const selectedOption = e.target.value;
     if (selectedOption === country) {
       alert("Correct!");
+      setLevel((prev) => prev + 1);
+      localStorage.setItem('level',level + 1)
       nextQuestion();
     } else {
-      alert("Wrong! Try again.");
+      alert("Wrong! Try again. correct answer was "+currentQuestion());
+      checkForHighlevel();
+      setLevel(1);
+      localStorage.setItem('level',1)
+      nextQuestion();
     }
   };
 
@@ -108,8 +122,14 @@ function App() {
     <Quizprovider value={{ currentQuestion, isCorrect, nextQuestion }}>
       <div className="bg-[#0d1117] min-h-screen py-8">
         <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
-          <h1 className="text-2xl font-bold text-center mb-8 mt-2">
+          <h1 className="text-2xl font-bold text-center mb-1 mt-2">
             Guess The Highlighted Country
+          </h1>
+          <h1 className="text-1xl font-bold text-center mb-1">
+            Level : {level}
+          </h1>
+          <h1 className="text-1xl font-bold text-center mb-8">
+            Highest Level : {highLevel}
           </h1>
           <div className="mb-4">
             <Map country={currentQuestion()} />
