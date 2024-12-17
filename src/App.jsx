@@ -47,7 +47,7 @@ function App() {
     parseInt(localStorage.getItem("level"), 10) || 0
   );
 
-  const getRandomCountry = (excluded = Array) => {
+  const getRandomCountry = (excluded = []) => {
     const filteredCountries = countries.filter(
       (c) => !excluded.includes(c)
     );
@@ -97,12 +97,10 @@ function App() {
   const isCorrect = (e) => {
     const selectedOption = e.target.value;
     if (selectedOption === country) {
-      setLevel(prev + 1);
       alert("Correct!");
       nextQuestion();
     } else {
       alert("Wrong! Try again.");
-      setLevel(1);
     }
   };
 
