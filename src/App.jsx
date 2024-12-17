@@ -47,8 +47,7 @@ function App() {
     parseInt(localStorage.getItem("level"), 10) || 0
   );
 
-  // Function to get a random country
-  const getRandomCountry = (excluded = []) => {
+  const getRandomCountry = (excluded = Array) => {
     const filteredCountries = countries.filter(
       (c) => !excluded.includes(c)
     );
@@ -56,16 +55,13 @@ function App() {
     return filteredCountries[randomIndex];
   };
 
-  // Function to generate options
   const generateOptions = (currentCountry) => {
     const correctCountry = currentCountry;
     const option1 = getRandomCountry([correctCountry]);
     const option2 = getRandomCountry([correctCountry, option1]);
     const option3 = getRandomCountry([correctCountry, option1, option2]);
-
-    // Combine and shuffle options
     const optionsArray = [correctCountry, option1, option2, option3];
-    for (let i = optionsArray.length - 1; i > 0; i--) {
+    for (let i = 3; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [optionsArray[i], optionsArray[j]] = [optionsArray[j], optionsArray[i]];
     }
@@ -73,7 +69,6 @@ function App() {
   };
 
   useEffect(() => {
-    // If options are not in localStorage, generate them
     if (!options.length) {
       const newOptions = generateOptions(country);
       setOptions(newOptions);
@@ -87,11 +82,9 @@ function App() {
     setCountries((prev) => prev.filter((c) => c !== randomCountry));
     setLevel((prev) => prev + 1);
 
-    // Generate new options
     const newOptions = generateOptions(randomCountry);
     setOptions(newOptions);
 
-    // Save to localStorage
     localStorage.setItem("currentCountry", randomCountry);
     localStorage.setItem("options", JSON.stringify(newOptions));
     localStorage.setItem("level", level + 1);
@@ -104,10 +97,12 @@ function App() {
   const isCorrect = (e) => {
     const selectedOption = e.target.value;
     if (selectedOption === country) {
+      setLevel(prev + 1);
       alert("Correct!");
       nextQuestion();
     } else {
       alert("Wrong! Try again.");
+      setLevel(1);
     }
   };
 
