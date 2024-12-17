@@ -140,7 +140,7 @@ function App() {
                 <button
                   value={opps}
                   onClick={isCorrect}
-                  className="text-black w-full p-2 m-2 bg-white rounded-md"
+                  className="text-black w-full p-2 m-2 bg-white rounded-md hover:bg-gray-300"
                 >
                   {opps}
                 </button>
